@@ -1,12 +1,7 @@
 package it.coderit.demos.boot.eserciziofinale.api;
 
 import it.coderit.demos.boot.eserciziofinale.api.model.Contract;
-import it.coderit.demos.boot.eserciziofinale.persistence.model.Contractor;
-import it.coderit.demos.boot.eserciziofinale.persistence.model.Property;
-import it.coderit.demos.boot.eserciziofinale.persistence.repository.ContractRepository;
-import it.coderit.demos.boot.eserciziofinale.persistence.repository.ContractorRepository;
-import it.coderit.demos.boot.eserciziofinale.persistence.repository.PropertyRepository;
-import it.coderit.demos.boot.eserciziofinale.service.mapper.ContractMapper;
+import it.coderit.demos.boot.eserciziofinale.service.ContractService;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,24 +16,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @DenyAll
 public class ContractApi {
-    private final ContractRepository repository;
-    private final ContractorRepository contractorRepository;
-    private final PropertyRepository propertyRepository;
-    private final ContractMapper mapper;
+    private final ContractService contractService;
 
     @PostMapping
     @RolesAllowed({"ROLE_ADMIN"})
-    public Contract create(@RequestBody @Valid Contract request) {
-        Contractor contractor = contractorRepository.getReferenceById(request.getContractorId());
-        Property property = propertyRepository.getReferenceById(request.getPropertyId());
-        it.coderit.demos.boot.eserciziofinale.persistence.model.Contract contract = mapper.fromApiModel(request, contractor, property);
-        it.coderit.demos.boot.eserciziofinale.persistence.model.Contract dbModel = repository.save(contract);
-        return mapper.toApiModel(dbModel);
+    public Contract create(@RequestBody @Valid Contract request) throws Exception {
+        return contractService.createContract(request);
     }
 
     @GetMapping
     @PermitAll
     public List<Contract> findAll() {
-        return repository.findAll().stream().map(mapper::toApiModel).toList();
+        return contractService.findAll();
     }
 }
