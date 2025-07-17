@@ -1,8 +1,10 @@
 package it.coderit.demos.boot.eserciziofinale.persistence.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.annotations.IdGeneratorType;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.UUID;
 
@@ -22,11 +24,14 @@ public class Property {
     private UUID id;
 
     @Column(name = "name", nullable = false)
+    @NotBlank
     private String name;
 
     @Column(name = "address", nullable = false)
+    @NotBlank
     private String address;
 
     @Column(name = "vat_id", nullable = false, unique = true)
+    @Length(min = 11, max = 16)
     private String vatId;
 }
